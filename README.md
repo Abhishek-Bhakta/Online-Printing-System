@@ -91,10 +91,10 @@ Just follow these easy steps:
 
 ```bash
 # 1. Clone the project
-git clone https://github.com/AbhishekDevZone/printify.git
+git clone https://github.com/Abhishek-Bhakta/Online-Printing-System.git
 
 # 2. Move it into your XAMPP htdocs folder
-cd printify
+cd Online-printing-System
 
 # 3. Start XAMPP (Apache & MySQL)
 
@@ -102,4 +102,4 @@ cd printify
 # Open phpMyAdmin > Create DB: printify > Import 'printify.sql'
 
 # 5. Open it in your browser
-http://localhost/printify/
+http://localhost/Online-printing-System/
