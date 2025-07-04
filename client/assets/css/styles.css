@@ -1,0 +1,135 @@
+/* Global Styles */
+body {
+    background-color: #f4f7fc;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.navbar a {
+    text-decoration: none !important; /* Underline remove karega */
+}
+
+.navbar-logo a {
+    text-decoration: none !important;
+}
+
+.navbar-logo span {
+    text-decoration: none !important;
+    border-bottom: none !important; /* Agar koi border ho to remove karega */
+}
+.bord{
+   
+    border-radius: 12px;
+    height:630px;
+}
+.page-header-title{
+    margin-bottom: 20px;
+}
+/* Remove default margin & padding */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure container starts from the top */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Ensure content starts from top */
+    padding-top: 0 !important; /* Force remove any padding */
+    margin-top: 0 !important; /* Remove any extra margin */
+    width: 88%;
+}
+
+/* Add this if there's extra margin from any parent */
+.container:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.content {
+    margin-top: 18px;
+    flex: 1; /* Yeh ensure karega ke content jitna hoga, utni height lega */
+    width: 100%;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+    .container {
+        min-height: auto; /* Small screens pe height auto ho */
+    }
+}
+
+/* Flexbox Layout for Form & Shop Info */
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+/* Form Sections & Shop Info */
+.form-section, 
+.shop-info {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+}
+
+
+/* Map Styling */
+#map {
+    height: 260px;
+    width: 100%;
+    border-radius: 10px;
+    background-color: #d9e4f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+/* Ensure Full Page Scroll on Small Screens */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column; /* Mobile par stack hoga */
+    }
+
+    .form-section, 
+    .shop-info {
+        width: 100%; /* Full width */
+        min-height: auto; /* Height auto */
+    }
+
+    /* Ensure Page Scrolls */
+    .container {
+        min-height: 100vh; /* Full viewport height */
+        overflow-y: auto; /* Scroll enable */
+    }
+}
+
+/* 📱 Extra Small Screens (Max width: 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+        border-radius: 0;
+    }
+
+    .form-section, 
+    .shop-info {
+        padding: 10px;
+    }
+
+    #map {
+        height: 180px;
+        font-size: 14px;
+    }
+}
+#pay-btn:hover {
+    border-color: green;
+}

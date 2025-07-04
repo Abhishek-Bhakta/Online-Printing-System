@@ -1,0 +1,755 @@
+<?php include('db.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+       body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4CAF50;
+            transition: color 0.3s;
+        }
+
+        .logo:hover {
+            color: #45a049;
+        }
+
+        .delivery-info {
+            text-align: right;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .login-btn,
+        .cart-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover,
+        .cart-btn:hover {
+            background-color: #45a049;
+        }
+
+        .cart-btn {
+            background-color: #333;
+        }
+
+        .cart-btn:hover {
+            background-color: #555;
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-section {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+
+        .preview-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .file-card,
+        .add-file-card {
+            width: 180px;
+            height: 230px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow 0.3s, border-color 0.3s;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+            text-align: center;
+        }
+
+        .file-card img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .file-card:hover,
+        .add-file-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .add-file-card {
+            border-style: dashed;
+            color: #4CAF50;
+            cursor: pointer;
+        }
+
+        .add-file-card span {
+            font-size: 36px;
+        }
+
+        .add-file-card p,
+        .file-card p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Print Settings */
+        .print-settings {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: 80vw; /* Full viewport width */
+            max-width: 1000px; /* Remove the max-width constraint */
+            margin: 0 auto; /* Center the element horizontally */
+            box-sizing: border-box; /* Ensure padding is included in width calculation */
+        }
+
+        .print-settings h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group label {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+        }
+
+        .counter-btn {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .counter-btn:hover {
+            background-color: #ddd;
+        }
+
+        .counter input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .color-options label,
+        .orientation-options label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .color-options input,
+        .orientation-options input {
+            margin-right: 10px;
+        }
+
+        .color-label,
+        .orientation-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .cart-summary {
+            background-color: #e6f7e6;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 40px); /* Adjust width for padding and borders */
+            max-width: 1000px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px auto 0; /* Center and adjust spacing */
+        }
+
+        .cart-summary p {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .view-cart-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .view-cart-btn:hover {
+            background-color: #45a049;
+        }
+
+        .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #4CAF50;
+        }
+        /* Ensure overlay covers the entire viewport and is initially hidden */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+    display: none; /* Hidden by default */
+}
+
+/* Sidebar styling, ensure it slides in from the right */
+.cart-sidebar {
+    background-color: #fff;
+    width: 400px;
+    height: 100%;
+    max-height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transform: translateX(100%); /* Hidden by default */
+    transition: transform 0.3s ease;
+    z-index: 2; /* Ensure it’s above other content */
+    box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+/* Ensure overlay and sidebar are properly aligned */
+.overlay.show {
+    display: block; /* Show overlay when sidebar is visible */
+}
+
+.cart-sidebar.show {
+    transform: translateX(0%); /* Slide in */
+}
+
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+            color: #000;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cart-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .cart-header .cancel-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #000;
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cart-header .cancel-icon:hover {
+            color: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .cart-content {
+            padding: 20px;
+        }
+
+        .delivery-time {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .delivery-time .icon {
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border-radius: 50%;
+            margin-right: 10px;
+            color: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .file-details img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-info {
+            font-size: 14px;
+        }
+
+        .file-info p {
+            margin: 2px 0;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .bill-details {
+            margin-bottom: 20px;
+        }
+
+        .bill-details h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .discounted-price {
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .free-text {
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .cancellation-policy {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .cancellation-policy h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .cart-footer {
+            background-color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            color: #000;
+            font-weight: 500;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .total-amount-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 7px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .total-amount-btn .rupee {
+            position: absolute;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .total-amount-btn .total-text {
+            font-size: 13px;
+            font-weight: 250;
+            color: #fff;
+            margin-top: 20px;
+            padding-right: 140px;
+        }
+
+        .total-amount-btn .proceed-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-left: auto;
+            margin-top: 10px;
+        }
+
+        .total-amount-btn:hover {
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .total-amount-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+        }
+        /* Floating Map Window */
+    .map-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px; /* Reduced width */
+      max-width: 400px;
+      height: 300px; /* Reduced height */
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      display: none;
+      cursor: move; /* Add cursor for drag */
+      z-index: 1000; /* Ensure it's on top of other elements */
+    }
+    .map-container #map { height: 90%; }
+    .close-btn {
+      cursor: pointer;
+      background: red;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      float: right;
+    }
+
+    /* Position the map beside the options */
+    .settings-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .settings-section .print-settings {
+      flex: 1;
+    }
+    .settings-section .select-shop-section {
+      margin-left: 20px;
+      flex-shrink: 0;
+    }
+
+/* Cart Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Initially hidden off-screen */
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: right 0.3s ease-in-out; /* Smooth transition for sliding */
+    padding: 20px;
+    display: none; /* Ensure it's hidden initially */
+}
+
+/* When the sidebar is open, it should slide in from the right */
+.cart-sidebar.open {
+    right: 0; /* Move the sidebar to the right */
+    display: block; /* Ensure the sidebar is shown */
+}
+
+
+
+    .cart-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    </style>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Select Shop</title>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">PrintMaster</div>
+            <div class="user-actions">
+               <a href="login.html"><button class="login-btn">Login</button></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="preview-section">
+            <h2>Printout Preview</h2>
+            <div class="file-preview">
+                <div class="file-card">
+                    <p>File 1 (1 page)</p>
+                </div>
+                <div class="add-file-card" onclick="openFileUploader()">
+                    <span>+</span>
+                    <p>Add files</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="settings-section">
+            <div class="print-settings">
+                <h3>Print Settings</h3>
+                <div class="setting-group">
+                    <label for="copies">Choose number of copies</label>
+                    <div class="counter">
+                        <button class="counter-btn" onclick="changeCopies(-1)">-</button>
+                        <input type="number" id="copies" value="1" min="1">
+                        <button class="counter-btn" onclick="changeCopies(1)">+</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Choose print color</label>
+                    <div class="color-options">
+                        <label>
+                            <input type="radio" name="color" value="3" checked>
+                            <span class="color-label">B&W ₹3/page</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="color" value="10">
+                            <span class="color-label">Color ₹10/page</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Choose print orientation</label>
+                    <div class="orientation-options">
+                        <label>
+                            <input type="radio" name="orientation" value="portrait" checked>
+                            <span class="orientation-label">Portrait</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="orientation" value="landscape">
+                            <span class="orientation-label">Landscape</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Moved the Select Shop button here -->
+                <section class="select-shop-section">
+                    <button onclick="openMap()">Select Shop</button>
+                </section>
+
+                <div class="cart-summary">
+                    <p id="total-pages">Total 1 page</p>
+                    <p id="total-amount">₹3</p>
+                    <button class="view-cart-btn" onclick="toggleCartSidebar()">Place</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <h2>Cart</h2>
+        <!-- Cart content goes here -->
+        <button onclick="closeCartSidebar()">Close Cart</button>
+    </div>
+
+    <div class="map-container" id="mapWindow">
+        <span class="close-btn" onclick="closeMap()">X</span>
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        let offsetX, offsetY;
+
+        // Enable dragging of the map window
+        function makeMapWindowDraggable() {
+            const mapWindow = document.getElementById('mapWindow');
+            mapWindow.addEventListener('mousedown', (e) => {
+                offsetX = e.clientX - mapWindow.getBoundingClientRect().left;
+                offsetY = e.clientY - mapWindow.getBoundingClientRect().top;
+                document.addEventListener('mousemove', moveMapWindow);
+                document.addEventListener('mouseup', () => {
+                    document.removeEventListener('mousemove', moveMapWindow);
+                });
+            });
+        }
+
+        // Move the map window when mouse is moved
+        function moveMapWindow(e) {
+            const mapWindow = document.getElementById('mapWindow');
+            mapWindow.style.left = e.clientX - offsetX + 'px';
+            mapWindow.style.top = e.clientY - offsetY + 'px';
+        }
+
+        function openMap() {
+            document.getElementById('mapWindow').style.display = 'block';
+            initializeMap();
+            makeMapWindowDraggable(); // Make the window draggable when opened
+        }
+
+        function closeMap() {
+            document.getElementById('mapWindow').style.display = 'none';
+        }
+
+        function initializeMap() {
+            var map = L.map('map').setView([20.5937, 78.9629], 5); // Initial location: India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            
+            fetch('get_shops.php') // Get shops data from your server-side PHP
+                .then(response => response.json())
+                .then(shops => {
+                    shops.forEach(shop => {
+                        L.marker([shop.latitude, shop.longitude]).addTo(map)
+                            .bindPopup(`<b>${shop.shop_name}</b><br>${shop.address}`)
+                            .on('click', function() {
+                                alert("Selected: " + shop.shop_name);
+                                closeMap();
+                                // After selecting a shop, automatically open the cart sidebar
+                                toggleCartSidebar();
+                            });
+                    });
+                });
+        }
+
+        // Cart sidebar toggle function
+        function toggleCartSidebar() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            // Add or remove the 'open' class for smooth sliding
+            cartSidebar.classList.toggle('open');
+            cartSidebar.style.display = 'block'; // Ensure it's visible when toggled
+        }
+
+        // Close cart sidebar
+        function closeCartSidebar() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.remove('open'); // Slide it out
+        }
+    </script>
+</body>
+
+</html>

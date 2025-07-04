@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopkeeper Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 500px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: 93vh;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #030303;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            background-color: #f7f7f7;
+            font-size: 15px;
+        }
+        /* Add margin to the Re-Password input for extra space */
+        input[name="re_password"] {
+            margin-bottom: 30px; /* Increase space before the button */
+        }
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            padding-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .signin-link {
+            text-align: center;
+            margin-top: 8px;
+            color: #555;
+        }
+        .location-container {
+    display: flex;
+    gap: 10px;
+}
+
+.location-container input {
+    flex: 1;
+}
+
+.location-container button {
+    width: 140px;
+    height: 45px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Shopkeeper Registration</h2>
+        <form action="shopkeeper_registration.php" method="POST">
+            <input type="text" name="shopkeeper_name" placeholder="Shopkeeper Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="phone" placeholder="Phone Number (optional)">
+            <input type="text" name="shop_name" placeholder="Shop Name" required>
+            <input type="text" name="shop_address" placeholder="Shop Address" required>
+            <div class="location-container">
+                <input type="text" id="latitude" name="latitude" placeholder="Latitude" required>
+                <input type="text" id="longitude" name="longitude" placeholder="Longitude" required>
+                <button type="button" onclick="getLocation()"><b>Get My Location</b></button>
+            </div>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="register-btn">Register Shop</button>
+            
+        </form>
+        
+        <div class="signin-link">
+            If you have an account, <a href="login.html">LogIn</a>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const phone = document.querySelector('input[name="phone"]').value;
+
+            // Validate phone number (basic validation, adjust regex as needed)
+            const phoneRegex = /^[0-9]{10}$/; // Assuming 10 digit phone numbers
+            if (!phoneRegex.test(phone)) {
+                alert("Please enter a valid 10-digit phone number.");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+        function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+        }, function(error) {
+            alert("Error getting location: " + error.message);
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+    </script>
+</body>
+</html>
